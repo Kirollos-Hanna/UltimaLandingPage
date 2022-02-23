@@ -271,6 +271,20 @@
 
 }
 
+@media screen and (max-height: 760px) {
+    .streak-feature-text h1,
+    .streak-freeze-feature-text h1,
+    .free-text h1 {
+        font-size: 56px;
+    }
+
+    .streak-feature-text p,
+    .streak-freeze-feature-text p,
+    .free-text p {
+        font-size: 28px;
+    }
+}
+
 @media screen and (max-height: 700px) {
 
     .canvas-container {
@@ -402,6 +416,18 @@
 
     .hero-text-container h3 {
         font-family: 'Glory-ExtraLight';
+        font-size: 24px;
+    }
+
+    .streak-feature-text h1,
+    .streak-freeze-feature-text h1,
+    .free-text h1 {
+        font-size: 56px;
+    }
+
+    .streak-feature-text p,
+    .streak-freeze-feature-text p,
+    .free-text p {
         font-size: 24px;
     }
 }
