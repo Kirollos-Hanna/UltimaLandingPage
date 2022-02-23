@@ -1,0 +1,42 @@
+.faq-question-container {
+    border-bottom: 3px solid #402B4D;
+}
+
+.question-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.question,
+.answer {
+    font-family: 'Glory-Medium';
+    color: #EDECE0;
+    margin: 0;
+    margin-bottom: 16px;
+    margin-top: 16px;
+}
+
+.question {
+    font-size: 48px;
+    margin-right: 5px;
+}
+
+.answer {
+    font-size: 24px;
+    overflow: hidden;
+    white-space: pre-line;
+}
+
+
+/* MAX WIDTH 450px for mobile phone screens */
+@media screen and (max-width: 450px) {
+    .question {
+        font-size: 32px;
+    }
+
+    .answer {
+        font-size: 18px;
+    }
+}
