@@ -124,6 +124,10 @@
     display: flex;
 }
 
+.streak-feature-section {
+    padding-top: 25px;
+}
+
 .vertical-rule {
     height: 80%;
     width: 0;

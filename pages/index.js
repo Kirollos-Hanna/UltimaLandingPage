@@ -11,53 +11,16 @@ import IceIcon from '../components/icons/ice_icon'
 import MoneyIcon from '../components/icons/money_icon'
 import Question from '../components/question'
 import Head from 'next/head'
-import { Suspense, useState, useLayoutEffect, useRef } from 'react'
+import { Suspense } from 'react'
 import { Color } from 'three'
-const { motion, useViewportScroll, useTransform, useSpring, useReducedMotion } = require("framer-motion");
+const { motion, useViewportScroll, useTransform } = require("framer-motion");
 import { useInView } from 'react-intersection-observer';
+import ParallaxBox from '../components/parallaxBox'
 
 export default function Home() {
-  const prefersReducedMotion = useReducedMotion()
-  const offset = 50
   const { scrollY } = useViewportScroll();
 
-  const [elementTop, setElementTop] = useState(0);
-  const [clientHeight, setClientHeight] = useState(0);
-  // start animating our element when we've scrolled it into view
-  const initial = elementTop - clientHeight
-  // end our animation when we've scrolled the offset specified
-  const final = elementTop + 100
-
-  const yRange = useTransform(scrollY, [initial, final], [offset, -offset])
-  // apply a spring to ease the result
-  const y = useSpring(yRange, { stiffness: 400, damping: 90 })
-  const ref = useRef(null);
-
-  const [elementTop2, setElementTop2] = useState(0);
-  const [clientHeight2, setClientHeight2] = useState(0);
-  const initial2 = elementTop2 - clientHeight2
-  const final2 = elementTop2 + 100
-  const yRange2 = useTransform(scrollY, [initial2, final2], [offset, -offset])
-  const y2 = useSpring(yRange2, { stiffness: 400, damping: 90 })
-  const ref2 = useRef(null);
-  
-  const [elementTop3, setElementTop3] = useState(0);
-  const [clientHeight3, setClientHeight3] = useState(0);
-  const initial3 = elementTop3 - clientHeight3
-  const final3 = elementTop3 + 100
-  const yRange3 = useTransform(scrollY, [initial3, final3], [offset, -offset])
-  const y3 = useSpring(yRange3, { stiffness: 400, damping: 90 })
-  const ref3 = useRef(null);
-
-  const [elementTop4, setElementTop4] = useState(0);
-  const [clientHeight4, setClientHeight4] = useState(0);
-  const initial4 = elementTop4 - clientHeight4
-  const final4 = elementTop2 + 100
-  const yRange4 = useTransform(scrollY, [initial4, final4], [offset, -offset])
-  const y4 = useSpring(yRange4, { stiffness: 400, damping: 90 })
-  const ref4 = useRef(null);
-
-  const [containerRef, coninView, entry] = useInView({
+  const [containerRef, conInView, entry] = useInView({
     /* Optional options */
     threshold: 0.5,
     triggerOnce: false
@@ -80,49 +43,6 @@ export default function Home() {
 
   const mountain1y = useTransform(scrollY, [0, 300], [0, -100]);
   const mountain2y = useTransform(scrollY, [0, 300], [0, -30]);
-
-  const calcRefParallax = (ref, setElementTop, setClientHeight) => {
-    const element = ref.current
-    // save our layout measurements in a function in order to trigger
-    // it both on mount and on resize
-    const onResize = () => {
-      // use getBoundingClientRect instead of offsetTop in order to
-      // get the offset relative to the viewport
-      setElementTop(element.getBoundingClientRect().top + window.scrollY || window.pageYOffset)
-      setClientHeight(window.innerHeight)
-    }
-    onResize()
-    window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
-  }
-
-  useLayoutEffect(() => {
-    return calcRefParallax(ref, setElementTop, setClientHeight)
-  }, [ref])
-
-  useLayoutEffect(() => {
-    return calcRefParallax(ref2, setElementTop2, setClientHeight2)
-  }, [ref2])
-
-  useLayoutEffect(() => {
-    return calcRefParallax(ref3, setElementTop3, setClientHeight3)
-  }, [ref3])
-
-  useLayoutEffect(() => {
-    return calcRefParallax(ref4, setElementTop4, setClientHeight4)
-  }, [ref4])
-
-  // Don't parallax if the user has "reduced motion" enabled
-  if (prefersReducedMotion) {
-    return <>{children}</>
-  }
-
-  const variants = {
-    visible: { opacity: 1, scale: 1, y: 0 },
-    hidden: {
-      opacity: 0,
-    }
-  };
 
   const elem = typeof document !== "undefined" ? document.getElementById("h-image") : null;
 
@@ -217,113 +137,69 @@ export default function Home() {
         </div>
       </motion.div>
       <motion.div ref={containerRef} className={`${styles['full-page-height']} ${styles['purple-background']} ${styles['streak-feature-section']}`}>
-        <motion.div
-          ref={ref}
-          style={{ y }}
-          animate={coninView ? 'visible' : 'hidden'}
-          variants={variants}
-          transition={{ duration: 2, ease: 'easeOut' }}
-          className={`${styles['item-container-flame']}`}>
-          <FlameIcon />
-        </motion.div>
-        <motion.div ref={ref}
-          style={{ y }}
-          animate={coninView ? 'visible' : 'hidden'}
-          variants={variants}
-          transition={{ duration: 2, ease: 'easeOut' }}
-          className={styles['vertical-rule']}></motion.div>
-        <motion.div ref={ref}
-          style={{ y }}
-          animate={coninView ? 'visible' : 'hidden'}
-          variants={variants}
-          transition={{ duration: 2, ease: 'easeOut' }}
-          className={styles['streak-feature-text']}>
-          <h1>Habit Streaks</h1>
-          <p>Leverage the power of habit streaks
-            to create unbreakable habits.</p>
-          <p>The longer your streak is,
-            the stronger your habit.</p>
-        </motion.div>
+        <ParallaxBox
+          conInView={conInView}
+        >
+          <div
+            className={`${styles['item-container-flame']}`}>
+            <FlameIcon />
+          </div>
+          <div className={styles['vertical-rule']}></div>
+          <div
+            className={styles['streak-feature-text']}>
+            <h1>Habit Streaks</h1>
+            <p>Leverage the power of habit streaks
+              to create unbreakable habits.</p>
+            <p>The longer your streak is,
+              the stronger your habit.</p>
+          </div>
+        </ParallaxBox>
       </motion.div>
       <motion.div ref={container2Ref} className={`${styles['full-page-height']} ${styles['purple-background']} ${styles['streak-freeze-feature-section']}`}>
-        <motion.div
-          ref={ref2}
-          style={{ y2 }}
-          animate={con2inView ? 'visible' : 'hidden'}
-          variants={variants}
-          transition={{ duration: 2, ease: 'easeOut' }}
-          className={styles['streak-freeze-feature-text']}>
-          <h1>Streak Freezes</h1>
-          <p>Streak freezes are the helping hand in your tough days.</p>
-          <p>Whenever you're too busy to
-            complete your habit for the day,
-            simply buy a streak freeze to keep
-            your streak safe.</p>
-        </motion.div>
-        <motion.div
-          ref={ref2}
-          style={{ y2 }}
-          animate={con2inView ? 'visible' : 'hidden'}
-          variants={variants}
-          transition={{ duration: 2, ease: 'easeOut' }}
-          className={styles['vertical-rule']}></motion.div>
-        <motion.div
-          ref={ref2}
-          style={{ y2 }}
-          animate={con2inView ? 'visible' : 'hidden'}
-          variants={variants}
-          transition={{ duration: 2, ease: 'easeOut' }}
-          className={`${styles['item-container-ice']}`}>
-          <IceIcon />
-        </motion.div>
+        <ParallaxBox
+          conInView={con2inView}
+        >
+          <div className={styles['streak-freeze-feature-text']}>
+            <h1>Streak Freezes</h1>
+            <p>Streak freezes are the helping hand in your tough days.</p>
+            <p>Whenever you're too busy to
+              complete your habit for the day,
+              simply buy a streak freeze to keep
+              your streak safe.</p>
+          </div>
+          <div
+            className={styles['vertical-rule']}></div>
+          <div
+            className={`${styles['item-container-ice']}`}>
+            <IceIcon />
+          </div>
+        </ParallaxBox>
       </motion.div>
       <motion.div ref={container3Ref} className={`${styles['full-page-height']} ${styles['purple-background']} ${styles['free-section']}`}>
-        <motion.div
-          ref={ref3}
-          style={{ y3 }}
-          animate={con3inView ? 'visible' : 'hidden'}
-          variants={variants}
-          transition={{ duration: 2, ease: 'easeOut' }}
-          className={`${styles['item-container-money']}`}>
-          <MoneyIcon />
-        </motion.div>
-        <motion.div
-          ref={ref3}
-          style={{ y3 }}
-          animate={con3inView ? 'visible' : 'hidden'}
-          variants={variants}
-          transition={{ duration: 2, ease: 'easeOut' }}
-          className={styles['vertical-rule']}></motion.div>
-        <motion.div
-          ref={ref3}
-          style={{ y3 }}
-          animate={con3inView ? 'visible' : 'hidden'}
-          variants={variants}
-          transition={{ duration: 2, ease: 'easeOut' }}
-          className={styles['free-text']}>
-          <h1>Free Forever</h1>
-          <p>Ultima doesn’t require hosting and is
-            the hobby project of <a href="https://twitter.com/Kiromoth">Kiromoth</a>.</p>
-          <p>If you want to support the project, please
-            check out the <a href="https://www.patreon.com/kiromoth">Patreon page</a>. You’ll also get
-            updates on future feature plans and see the
-            roadmap for the app.</p>
-        </motion.div>
+        <ParallaxBox
+          conInView={con3inView}
+        >
+          <div className={`${styles['item-container-money']}`}>
+            <MoneyIcon />
+          </div>
+          <div className={styles['vertical-rule']}></div>
+          <div className={styles['free-text']}>
+            <h1>Free Forever</h1>
+            <p>Ultima doesn’t require hosting and is
+              the hobby project of <a href="https://twitter.com/Kiromoth">Kiromoth</a>.</p>
+            <p>If you want to support the project, please
+              check out the <a href="https://www.patreon.com/kiromoth">Patreon page</a>. You’ll also get
+              updates on future feature plans and see the
+              roadmap for the app.</p>
+          </div>
+        </ParallaxBox>
       </motion.div>
       <motion.div ref={container4Ref} className={`${styles['purple-background']} ${styles['faq-section']}`}>
-        <motion.h1
-          ref={ref4}
-          style={{ y4 }}
-          animate={con4inView ? 'visible' : 'hidden'}
-          variants={variants}
-          transition={{ duration: 2, ease: 'easeOut' }}
-        >FAQ</motion.h1>
-        <motion.div
-          ref={ref4}
-          style={{ y4 }}
-          animate={con4inView ? 'visible' : 'hidden'}
-          variants={variants}
-          transition={{ duration: 2, ease: 'easeOut' }}>
+        <ParallaxBox
+          conInView={con4inView}
+          useFlex={false}
+        >
+          <h1>FAQ</h1>
           <Question
             question="How does the app work?"
             answer="1- Create a habit you want to do.\n2- Do it.\nThat’s it. But the power of the app won’t appear until you’ve managed to do your habits 3 times (in total). That’s when you’ll be able to buy a streak freeze for a habit and keep your streak safe."
@@ -331,22 +207,19 @@ export default function Home() {
           <Question question="Can I sell my streak freezes?" answer="Yes, simply double-tap the streak freeze that you bought." />
           <Question question="How is my data stored?" answer="The app collects zero data, so all your data is stored locally on your device. Be careful of this, because if you delete the app without exporting your data, then all your data will be deleted." />
           <Question question="What if I want to migrate my data to another phone/tablet?" answer="1- Navigate to Android->data->com.kairman.ultima_habit_builder\n2- copy the whole folder into your other device’s Android->data folder.\n3- press the import button on the app.\nFor any questions or troubleshooting, DM me on Twitter" />
-        </motion.div>
-        <motion.div
-          ref={ref4}
-          style={{ y4 }}
-          animate={con4inView ? 'visible' : 'hidden'}
-          variants={variants}
-          className={styles['cta-container']}
-        >
-          <button
-            className={styles['hero-button-container']}
+
+          <div
+            className={styles['cta-container']}
           >
-            <a target="_blank" href='https://play.google.com/store/apps/details?id=com.kairman.ultima_habit_builder'>Download the App</a>
-          </button>
-        </motion.div>
+            <button
+              className={styles['hero-button-container']}
+            >
+              <a target="_blank" href='https://play.google.com/store/apps/details?id=com.kairman.ultima_habit_builder'>Download the App</a>
+            </button>
+          </div>
+        </ParallaxBox>
       </motion.div>
-      <motion.footer className={`w-full ${styles['purple-background']} ${styles['footer-section']}`}>
+      <footer className={`w-full ${styles['purple-background']} ${styles['footer-section']}`}>
         <div className={`${styles['social-links-container']}`}>
           <a target="_blank" href="https://twitter.com/Kiromoth">Twitter</a>
           <a target="_blank" href="https://www.patreon.com/kiromoth">Patreon</a>
@@ -356,7 +229,7 @@ export default function Home() {
           <a target="_blank" href="https://pages.flycricket.io/ultima-1/privacy.html">Privacy Policy</a>
           <a target="_blank" href="https://pages.flycricket.io/ultima-1/terms.html">Terms of Service</a>
         </div>
-      </motion.footer>
+      </footer>
     </div >
   )
 }

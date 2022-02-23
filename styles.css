@@ -79,6 +79,10 @@ body {
     width: 100%;
 }
 
+.flex {
+    display: flex;
+}
+
 .hide-x-overflow {
     overflow-x: hidden;
 }
